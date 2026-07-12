@@ -1,0 +1,251 @@
+/* Product Detail Premium Styling */
+
+.product-detail-page {
+    background-color: #fafbfc;
+    padding: 40px 0;
+    min-height: 100vh;
+}
+
+.product-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    background: white;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f1f5f9;
+}
+
+@media (max-width: 1024px) {
+    .product-layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
+/* Image Section */
+.product-visuals {
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+}
+
+/* Info Section */
+.product-intel {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.product-path {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #64748b;
+    font-size: 0.875rem;
+    margin-bottom: 8px;
+}
+
+.product-main-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.product-valuation {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: #f8fafc;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+}
+
+.current-valuation {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0066cc;
+}
+
+/* Action Center */
+.procurement-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.primary-actions-row {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-procure {
+    flex: 1;
+    background: #0066cc;
+    color: white;
+    border: none;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-procure:hover {
+    background: #0052a3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
+}
+
+.btn-wish-toggle {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #64748b;
+}
+
+.btn-wish-toggle:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.btn-wish-toggle.active {
+    background: #fef2f2;
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.btn-buy-instant {
+    width: 100%;
+    background: white;
+    color: #0066cc;
+    border: 2px solid #0066cc;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-buy-instant:hover {
+    background: #eff6ff;
+}
+
+/* Specs & Intel */
+.specs-registry {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.spec-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #f1f5f9;
+}
+
+.spec-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0066cc;
+}
+
+/* Reviews Redesign */
+.reviews-vault {
+    margin-top: 60px;
+    background: white;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f1f5f9;
+}
+
+.reviews-header-suite {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.reviews-title-block h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+
+.reviews-stats {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+    color: #64748b;
+}
+
+.review-card-premium {
+    padding: 24px;
+    background: #f8fafc;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    border: 1px solid #f1f5f9;
+}
+
+.reviewer-profile {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.reviewer-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.reviewer-badge {
+    padding: 2px 8px;
+    background: #dcfce7;
+    color: #15803d;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.write-review-prompt {
+    background: #eff6ff;
+    border: 1px dashed #0066cc;
+    padding: 24px;
+    border-radius: 16px;
+    text-align: center;
+    margin-bottom: 32px;
+}

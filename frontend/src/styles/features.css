@@ -1,0 +1,186 @@
+/* ========================================
+   PROFESSIONAL FEATURES SECTION
+   Modern Mobile Accessories Shop
+   ======================================== */
+
+.features-section {
+    padding: 4rem 0;
+    background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #0066cc;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 102, 204, 0.15);
+    border-color: #0066cc;
+}
+
+.feature-card:hover::before {
+    transform: scaleX(1);
+}
+
+.feature-icon {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e6f2ff !important;
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
+    color: #0066cc !important;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+    background: #0066cc !important;
+    color: #ffffff !important;
+    transform: scale(1.1);
+}
+
+.feature-card h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 0.75rem 0;
+    letter-spacing: -0.3px;
+}
+
+.feature-card p {
+    font-size: 0.9375rem;
+    color: #6b7280;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Individual feature card colors (optional subtle variations) */
+.feature-card-1:hover::before {
+    background: #0066cc;
+}
+
+.feature-card-2:hover::before {
+    background: #0066cc;
+}
+
+.feature-card-3:hover::before {
+    background: #0066cc;
+}
+
+.feature-card-4:hover::before {
+    background: #0066cc;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Large Tablet */
+@media (max-width: 1024px) {
+    .features-section {
+        padding: 3rem 0;
+    }
+
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .feature-card {
+        padding: 1.75rem 1.25rem;
+    }
+
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+    .features-section {
+        padding: 2.5rem 0;
+    }
+
+    .features-grid {
+        gap: 1.25rem;
+    }
+
+    .feature-card {
+        padding: 1.5rem 1rem;
+    }
+
+    .feature-card h3 {
+        font-size: 1rem;
+    }
+
+    .feature-card p {
+        font-size: 0.875rem;
+    }
+
+    .feature-icon {
+        width: 55px;
+        height: 55px;
+        margin-bottom: 1.25rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .features-section {
+        padding: 2rem 0;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 0 1rem;
+    }
+
+    .feature-card {
+        padding: 1.5rem;
+    }
+
+    .feature-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .feature-card h3 {
+        font-size: 1.0625rem;
+    }
+}

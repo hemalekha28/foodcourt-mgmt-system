@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+/* Keep Tailwind utilities available while preserving your existing CSS.
+   We intentionally import this BEFORE index.css in main.jsx so your custom
+   classes (e.g., .btn, .card, .grid-4) continue working and can override Tailwind base where needed.
+*/
+
+/* Base tweaks for accessibility and modern look */
+:root {
+  --brand: #4169E1;
+}
+
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+/***** Optional: light utility bridges for existing classes *****/
+/* Do NOT rename or remove existing classes; just enhance with Tailwind-compatible styles if needed. */
