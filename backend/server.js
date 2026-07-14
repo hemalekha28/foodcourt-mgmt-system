@@ -6,19 +6,42 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const { Server: SocketServer } = require('socket.io');
 
-// Load .env file with explicit path and debug
-const envPath = path.resolve(__dirname, '.env');
-console.log('Loading .env from:', envPath);
+/* -------------------------------------------------- */
+/* LOAD ENV VARS (LOCAL DEV ONLY — Render uses dashboard env vars) */
+/* -------------------------------------------------- */
+if (process.env.NODE_ENV !== 'production') {
+  const envPath = path.resolve(__dirname, '.env');
+  console.log('Loading .env from:', envPath);
 
-const envConfig = dotenv.config({ path: envPath });
-if (envConfig.error) {
-  console.error('❌ Error loading .env file:', envConfig.error);
+  const envConfig = dotenv.config({ path: envPath });
+  if (envConfig.error) {
+    console.warn('⚠️  No local .env file found — continuing with process.env as-is');
+  } else {
+    console.log('✅ .env loaded successfully');
+  }
 } else {
-  console.log('✅ Environment variables loaded successfully');
-  console.log(
-    'RAZORPAY_KEY_ID:',
-    process.env.RAZORPAY_KEY_ID ? 'Found' : 'Not found'
+  console.log('ℹ️  Production mode — using environment variables from host (not .env file)');
+}
+
+console.log(
+  'RAZORPAY_KEY_ID:',
+  process.env.RAZORPAY_KEY_ID ? 'Found' : 'Not found'
+);
+
+/* -------------------------------------------------- */
+/* FAIL FAST ON MISSING REQUIRED ENV VARS */
+/* -------------------------------------------------- */
+const requiredEnvVars = ['MONGODB_URI'];
+const missingEnvVars = requiredEnvVars.filter((key) => !process.env[key]);
+
+if (missingEnvVars.length > 0) {
+  console.error(
+    `❌ Missing required environment variable(s): ${missingEnvVars.join(', ')}`
   );
+  console.error(
+    'Set these in Render Dashboard → your service → Environment tab.'
+  );
+  process.exit(1);
 }
 
 /* -------------------------------------------------- */
@@ -119,7 +142,9 @@ app.use(errorHandler);
 /* DATABASE + SERVER START */
 /* -------------------------------------------------- */
 mongoose
-  .connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce')
+  .connect(process.env.MONGODB_URI, {
+    serverSelectionTimeoutMS: 10000 // fail fast instead of hanging silently
+  })
   .then(() => {
     console.log('✅ MongoDB Connected');
     server.listen(PORT, () => {
@@ -134,6 +159,18 @@ mongoose
     });
   })
   .catch(err => {
-    console.error('❌ MongoDB Connection Error:', err);
+    console.error('❌ MongoDB Connection Error:', err.message);
     process.exit(1);
   });
+
+/* -------------------------------------------------- */
+/* GLOBAL SAFETY NETS (optional but recommended) */
+/* -------------------------------------------------- */
+process.on('unhandledRejection', (reason) => {
+  console.error('❌ Unhandled Promise Rejection:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('❌ Uncaught Exception:', err);
+  process.exit(1);
+});
