@@ -1,3 +1,5 @@
+import { API_BASE_URL } from './api';
+
 // Centralized image URL utility
 // This should be imported and used across all components
 
@@ -10,7 +12,7 @@ export const constructImageUrl = (imagePath) => {
     }
 
     // Construct backend URL
-    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const baseUrl = API_BASE_URL;
 
     // Clean the path - remove leading slashes
     let cleanPath = imagePath.trim().replace(/^\/+/g, '');

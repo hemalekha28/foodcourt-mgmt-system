@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './authContext'; // Import your auth context
+import { buildApiUrl } from '../utils/api';
 
 const CartContext = createContext();
 
@@ -18,8 +19,7 @@ export const CartProvider = ({ children }) => {
 
   const { user, token } = useAuth(); // Get user and token from auth context
 
-  // API Base URL - adjust according to your backend
-  const API_BASE = 'http://localhost:5000/api';
+  const API_BASE = buildApiUrl();
 
   // Helper function to make API calls
   const apiCall = async (endpoint, options = {}) => {

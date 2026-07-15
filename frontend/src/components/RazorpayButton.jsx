@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { loadScript } from '@razorpay/checkout';
+import { buildApiUrl } from '../utils/api';
 
 export default function RazorpayButton({ 
   amount, 
@@ -25,7 +26,7 @@ export default function RazorpayButton({
 
   const createOrder = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/payments/create-order`, {
+      const response = await fetch(buildApiUrl('/payments/create-order'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,7 +61,7 @@ export default function RazorpayButton({
       const { order } = await createOrder();
       
       const options = {
-        key: process.env.REACT_APP_RAZORPAY_KEY_ID,
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: order.amount,
         currency: order.currency,
         name: 'Your Store Name',

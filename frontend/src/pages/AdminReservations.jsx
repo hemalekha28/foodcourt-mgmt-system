@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/authContext';
 import { io } from 'socket.io-client';
+import { API_BASE_URL } from '../utils/api';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -28,8 +29,8 @@ ChartJS.register(
   Legend
 );
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = API_BASE_URL;
+const SOCKET_URL = API_BASE_URL;
 
 const statusConfig = {
   pending: { bg: '#fef3c7', text: '#d97706', border: '#fde68a' },

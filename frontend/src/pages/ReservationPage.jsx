@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import TableAvailabilityGrid from '../components/TableAvailabilityGrid';
 import { useAuth } from '../context/authContext';
+import { API_BASE_URL } from '../utils/api';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = API_BASE_URL;
 
 /* Time slots 10:00 – 22:00 */
 const TIME_SLOTS = Array.from({ length: 12 }, (_, i) => {

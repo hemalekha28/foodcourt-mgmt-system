@@ -1,8 +1,15 @@
 import axios from "axios";
 
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || (import.meta.env.PROD ? "https://foodcourt-mgmt-system.onrender.com" : "http://localhost:5000");
+
+export const buildApiUrl = (path = "") => {
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${API_BASE_URL}/api${normalizedPath}`;
+};
+
 // Create a single axios instance with base URL
-const API = axios.create({ 
-  baseURL: "http://localhost:5000/api",
+export const API = axios.create({
+  baseURL: buildApiUrl(),
   timeout: 10000
 });
 

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { buildApiUrl } from '../utils/api';
 
 const AuthContext = createContext();
 
@@ -70,7 +71,7 @@ export const AuthProvider = ({ children, initialRole }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch(buildApiUrl('/auth/login'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +104,7 @@ export const AuthProvider = ({ children, initialRole }) => {
 
   const register = async (userData) => {
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      const response = await fetch(buildApiUrl('/auth/register'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -140,7 +141,7 @@ export const AuthProvider = ({ children, initialRole }) => {
 
   const updateProfile = async (userData) => {
     try {
-      const response = await fetch('http://localhost:5000/api/auth/profile', {
+      const response = await fetch(buildApiUrl('/auth/profile'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

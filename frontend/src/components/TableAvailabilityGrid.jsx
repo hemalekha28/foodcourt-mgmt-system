@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { io } from 'socket.io-client';
+import { API_BASE_URL } from '../utils/api';
 
-const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const SOCKET_URL = API_BASE_URL;
+const API_URL = API_BASE_URL;
 
 const statusConfig = {
   available: {
