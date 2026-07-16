@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const Order = require('../models/Order');
-const razorpay = require('../utils/razorpay');
+const getRazorpay = require('../utils/razorpay');
 const { sendOrderConfirmationEmail } = require('../utils/emailService');
 
 // Create Razorpay order
@@ -30,6 +30,18 @@ const createRazorpayOrder = async (req, res) => {
     };
 
     console.log('Creating Razorpay order with options:', options);
+
+    let razorpay;
+    try {
+      razorpay = getRazorpay();
+    } catch (credErr) {
+      console.error('Razorpay not configured:', credErr.message);
+      return res.status(503).json({
+        success: false,
+        message: 'Payment service is not configured. Please contact support.',
+      });
+    }
+
     const order = await razorpay.orders.create(options);
     console.log('Razorpay order created successfully:', order.id);
 

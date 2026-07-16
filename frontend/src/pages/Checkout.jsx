@@ -99,7 +99,7 @@ const Checkout = () => {
 
       // Use Razorpay key from environment variables
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_RgPhDkqd6kwdDQ',
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: razorpayOrder.amount, // Already in paise from backend
         currency: razorpayOrder.currency,
         name: "Starlit & Co",

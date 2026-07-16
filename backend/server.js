@@ -31,7 +31,7 @@ console.log(
 /* -------------------------------------------------- */
 /* FAIL FAST ON MISSING REQUIRED ENV VARS */
 /* -------------------------------------------------- */
-const requiredEnvVars = ['MONGODB_URI'];
+const requiredEnvVars = ['MONGODB_URI', 'JWT_SECRET'];
 const missingEnvVars = requiredEnvVars.filter((key) => !process.env[key]);
 
 if (missingEnvVars.length > 0) {
@@ -39,7 +39,7 @@ if (missingEnvVars.length > 0) {
     `❌ Missing required environment variable(s): ${missingEnvVars.join(', ')}`
   );
   console.error(
-    'Set these in Render Dashboard → your service → Environment tab.'
+    'Set these in your hosting platform\'s Environment / Config Vars tab.'
   );
   process.exit(1);
 }
@@ -119,6 +119,33 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 /* -------------------------------------------------- */
+/* HEALTH CHECK (registered BEFORE routes so it always works) */
+/* -------------------------------------------------- */
+app.get('/api/health', (req, res) => {
+  const dbState = mongoose.connection.readyState;
+  // 0 = disconnected, 1 = connected, 2 = connecting, 3 = disconnecting
+  const dbStateMap = {
+    0: 'disconnected',
+    1: 'connected',
+    2: 'connecting',
+    3: 'disconnecting'
+  };
+
+  const isHealthy = dbState === 1;
+
+  res.status(isHealthy ? 200 : 503).json({
+    status: isHealthy ? 'ok' : 'degraded',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    database: {
+      state: dbStateMap[dbState] ?? 'unknown',
+      readyState: dbState
+    },
+    environment: process.env.NODE_ENV || 'unknown'
+  });
+});
+
+/* -------------------------------------------------- */
 /* IMPORT ROUTES */
 /* -------------------------------------------------- */
 const authRoutes = require('./routes/auth');
@@ -154,7 +181,7 @@ app.use('/api/reservations', reservationRoutes);
 // Static uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Health check
+// Root ping (kept for backward compat)
 app.get('/', (req, res) => {
   res.send('✅ API is running...');
 });
@@ -165,13 +192,40 @@ app.get('/', (req, res) => {
 app.use(errorHandler);
 
 /* -------------------------------------------------- */
-/* DATABASE + SERVER START */
+/* MONGOOSE CONNECTION EVENT LOGGING */
 /* -------------------------------------------------- */
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    serverSelectionTimeoutMS: 10000 // fail fast instead of hanging silently
-  })
-  .then(() => {
+mongoose.connection.on('connected', () => {
+  console.log('✅ Mongoose connected to MongoDB');
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('❌ Mongoose connection error:', err.message);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.warn('⚠️  Mongoose disconnected from MongoDB');
+});
+
+mongoose.connection.on('reconnected', () => {
+  console.log('🔄 Mongoose reconnected to MongoDB');
+});
+
+/* -------------------------------------------------- */
+/* DATABASE CONNECTION WITH RETRY LOGIC               */
+/* -------------------------------------------------- */
+const MAX_RETRIES = 5;
+const RETRY_DELAY_MS = 3000; // 3 s between retries
+
+const connectWithRetry = async (attempt = 1) => {
+  try {
+    console.log(`🔌 MongoDB connection attempt ${attempt}/${MAX_RETRIES}...`);
+    await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000, // fail fast per attempt instead of hanging
+      connectTimeoutMS: 10000,         // socket-level connection timeout
+      socketTimeoutMS: 45000,          // how long to wait for a response on an open socket
+    });
+
+    // Connection succeeded — start the HTTP server
     console.log('✅ MongoDB Connected');
     server.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
@@ -183,14 +237,24 @@ mongoose
           : 'Not found'
       });
     });
-  })
-  .catch(err => {
-    console.error('❌ MongoDB Connection Error:', err.message);
-    process.exit(1);
-  });
+  } catch (err) {
+    console.error(`❌ MongoDB Connection Error (attempt ${attempt}):`, err.message);
+
+    if (attempt < MAX_RETRIES) {
+      const delay = RETRY_DELAY_MS * attempt; // exponential-ish backoff
+      console.log(`⏳ Retrying in ${delay / 1000}s...`);
+      setTimeout(() => connectWithRetry(attempt + 1), delay);
+    } else {
+      console.error(`❌ All ${MAX_RETRIES} connection attempts failed. Exiting.`);
+      process.exit(1);
+    }
+  }
+};
+
+connectWithRetry();
 
 /* -------------------------------------------------- */
-/* GLOBAL SAFETY NETS (optional but recommended) */
+/* GLOBAL SAFETY NETS                                 */
 /* -------------------------------------------------- */
 process.on('unhandledRejection', (reason) => {
   console.error('❌ Unhandled Promise Rejection:', reason);
