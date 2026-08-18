@@ -30,6 +30,7 @@ import '../styles/featured-products.css';
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showWakeupMessage, setShowWakeupMessage] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const statsRef = useRef(null);
@@ -43,6 +44,11 @@ const Home = () => {
 
   useEffect(() => {
     const loadFeaturedProducts = async () => {
+      setShowWakeupMessage(false);
+      const wakeupTimer = setTimeout(() => {
+        setShowWakeupMessage(true);
+      }, 4000);
+
       try {
         const products = await api.getProducts();
         const featured = [...products].sort((a, b) => b.rating - a.rating).slice(0, 8);
@@ -50,6 +56,7 @@ const Home = () => {
       } catch (error) {
         console.error('Error loading featured products:', error);
       } finally {
+        clearTimeout(wakeupTimer);
         setLoading(false);
       }
     };
@@ -864,8 +871,31 @@ const Home = () => {
           </div>
 
           {loading ? (
-            <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem 0' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', padding: '4rem 0' }}>
               <div className="enhanced-spinner"></div>
+              {showWakeupMessage && (
+                <p style={{
+                  color: '#475569',
+                  fontSize: '0.95rem',
+                  fontWeight: 500,
+                  maxWidth: '450px',
+                  textAlign: 'center',
+                  lineHeight: '1.6',
+                  background: '#f8fafc',
+                  padding: '1.25rem',
+                  borderRadius: '12px',
+                  border: '1px dashed #cbd5e1',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
+                  margin: '0 auto',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <span style={{ fontSize: '1.5rem' }}>🔌</span>
+                  <span><strong>Warming up the Kitchen:</strong> The free-tier hosting server is waking up from sleep. This initial load can take up to 50 seconds. Thank you for your patience!</span>
+                </p>
+              )}
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2rem' }}>

@@ -8,6 +8,7 @@ const ProductListing = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null); // Add error state
+  const [showWakeupMessage, setShowWakeupMessage] = useState(false);
   const [filters, setFilters] = useState({
     category: searchParams.get('category') || 'all',
     minPrice: searchParams.get('minPrice') || '',
@@ -23,6 +24,13 @@ const ProductListing = () => {
   const loadProducts = async () => {
     setLoading(true);
     setError(null); // Reset error state
+    setShowWakeupMessage(false);
+    
+    // Show a helpful warning if loading takes more than 4 seconds (Render free tier cold start)
+    const wakeupTimer = setTimeout(() => {
+      setShowWakeupMessage(true);
+    }, 4000);
+
     try {
       console.log('Loading products with filters:', filters); // Debug log
       const data = await api.getProducts(filters);
@@ -41,6 +49,7 @@ const ProductListing = () => {
       setError(`Failed to load products: ${error.message}`);
       setProducts([]);
     } finally {
+      clearTimeout(wakeupTimer);
       setLoading(false);
     }
   };
@@ -252,8 +261,31 @@ const ProductListing = () => {
 
       {/* Products Grid */}
       {loading ? (
-        <div className="loading">
+        <div className="loading" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', padding: '4rem 0' }}>
           <div className="spinner"></div>
+          {showWakeupMessage && (
+            <p style={{
+              color: '#475569',
+              fontSize: '0.95rem',
+              fontWeight: 500,
+              maxWidth: '450px',
+              textAlign: 'center',
+              lineHeight: '1.6',
+              background: '#f8fafc',
+              padding: '1.25rem',
+              borderRadius: '12px',
+              border: '1px dashed #cbd5e1',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
+              margin: '0 auto',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}>
+              <span style={{ fontSize: '1.5rem' }}>🔌</span>
+              <span><strong>Warming up the Kitchen:</strong> The free-tier hosting server is waking up from sleep. This initial load can take up to 50 seconds. Thank you for your patience!</span>
+            </p>
+          )}
         </div>
       ) : error ? (
         <div className="card" style={{ padding: '4rem 2rem', textAlign: 'center' }}>

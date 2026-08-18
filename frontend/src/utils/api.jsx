@@ -10,7 +10,7 @@ export const buildApiUrl = (path = "") => {
 // Create a single axios instance with base URL
 export const API = axios.create({
   baseURL: buildApiUrl(),
-  timeout: 10000
+  timeout: 120000
 });
 
 // Attach token automatically for every request if available
